@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Registrar Vehículo - Estacionamiento UTN Villa María</title>
+<style>
+    :root {
+        --naranja-pastel: #f3aa75;
+        --naranja-oscuro: #d6844b;
+        --naranja-muy-suave: #f9e5d5;
+        --texto-negro: #000000;
+        --texto-gris: #333333;
+        --fondo-blanco: #ffffff;
+        --error-rojo: #b22222;
+        --gris-claro: #f5f5f5;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 60px auto 20px auto;
+        background: var(--gris-claro);
+        padding: 25px 35px 40px 35px;
+        border-radius: 8px;
+        box-shadow: 0 0 14px rgba(0,0,0,0.12);
+        position: relative;
+        min-height: 600px;
+        color: var(--texto-gris);
+    }
+    #logo {
+        position: fixed;
+        top: 10px;
+        left: 15px;
+        height: 48px;
+        width: auto;
+        z-index: 1001;
+    }
+    #fechaHoraActualFija {
+        position: fixed;
+        top: 12px;
+        right: 15px;
+        background: var(--naranja-pastel);
+        color: var(--texto-negro);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: monospace;
+        z-index: 1000;
+        box-shadow: 0 0 6px rgba(0,0,0,0.15);
+        user-select: none;
+    }
+
+    .top-nav {
+        margin: 0 auto 18px auto;
+        max-width: 700px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .top-nav a { text-decoration: none; }
+    .top-nav button {
+        background-color: var(--naranja-pastel);
+        border: none;
+        color: var(--texto-negro);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 6px rgba(243,170,117,0.6);
+    }
+    .top-nav button:hover {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+
+    h1 {
+        color: var(--texto-negro);
+        text-align: center;
+        margin-bottom: 10px;
+        padding-top: 10px;
+        font-weight: 800;
+        font-size: 2.2rem;
+    }
+    p.subtitulo {
+        text-align: center;
+        margin-top: -5px;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+        color: var(--texto-gris);
+    }
+    label {
+        display: block;
+        margin-top: 18px;
+        font-weight: 700;
+        color: var(--texto-negro);
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 5px;
+        box-sizing: border-box;
+        border: 2.5px solid var(--naranja-pastel);
+        border-radius: 6px;
+        font-size: 1rem;
+        color: var(--texto-negro);
+        background-color: var(--fondo-blanco);
+        transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus {
+        border-color: var(--naranja-oscuro);
+        outline: none;
+        box-shadow: 0 0 8px var(--naranja-muy-suave);
+        background: var(--fondo-blanco);
+    }
+    .error {
+        color: var(--error-rojo);
+        font-weight: 700;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 1rem;
+    }
+    .info-box {
+        background: var(--fondo-blanco);
+        padding: 18px 22px;
+        margin-top: 15px;
+        border-left: 6px solid var(--naranja-pastel);
+        font-size: 1.05em;
+        line-height: 1.5em;
+        color: var(--texto-negro);
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    #fechaHoraActual {
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    #btnContainer,
+    #btnContainerVeh {
+        margin-top: 28px;
+        text-align: center;
+        display: inline-flex;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(243, 170, 117, 0.5);
+    }
+    button.button {
+        background-color: var(--naranja-pastel);
+        border: none;
+        color: var(--texto-negro);
+        font-weight: 800;
+        padding: 12px 28px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 6px 0 0 6px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        min-width: 160px;
+        letter-spacing: 0.03em;
+        user-select: none;
+    }
+    button.button:hover:not(:disabled) {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+    button.button:disabled {
+        background-color: var(--naranja-muy-suave);
+        cursor: not-allowed;
+        color: var(--texto-negro);
+    }
+    .arrowBox {
+        background-color: var(--naranja-pastel);
+        color: var(--texto-negro);
+        font-weight: 900;
+        font-size: 1.5rem;
+        padding: 0 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0 6px 6px 0;
+        box-shadow: inset -2px 0 4px rgba(0,0,0,0.07);
+        user-select: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #btnContainer:hover .arrowBox,
+    #btnContainerVeh:hover .arrowBox {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+    #buttonsConfirmacion {
+        margin-top: 30px;
+        text-align: center;
+    }
+    #buttonsConfirmacion button {
+        margin: 0 12px;
+        padding: 12px 30px;
+        font-size: 1.05rem;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        font-weight: 700;
+        box-shadow: 0 3px 8px rgba(243, 170, 117, 0.6);
+        letter-spacing: 0.02em;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        user-select: none;
+        min-width: 160px;
+    }
+    #btnConfirmar {
+        background-color: var(--naranja-pastel);
+        color: var(--texto-negro);
+    }
+    #btnConfirmar:hover:not(:disabled) {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+        box-shadow: 0 4px 12px rgba(214, 132, 75, 0.8);
+    }
+    #btnConfirmar:disabled {
+        background-color: var(--naranja-muy-suave);
+        color: var(--texto-negro);
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+    #btnCancelar {
+        background-color: #d95757;
+        color: var(--fondo-blanco);
+        box-shadow: 0 3px 8px rgba(217, 87, 87, 0.9);
+    }
+    #btnCancelar:hover {
+        background-color: #b23f3f;
+        box-shadow: 0 4px 12px rgba(178, 63, 63, 0.9);
+    }
+    .hidden {
+        display: none;
+    }
+    #btnVolverNoComunidad {
+        margin-top: 18px;
+        display: inline-block;
+        background: var(--naranja-pastel);
+        color: var(--texto-negro);
+        border: none;
+        padding: 10px 22px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(243,170,117,0.6);
+    }
+    #btnVolverNoComunidad:hover {
+        background: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+</style>
+</head>
+<body>
+
+<img id="logo" src="https://appautogestion.frvm.utn.edu.ar/static/images/utn-logo.png" alt="UTN Logo" />
+<div id="fechaHoraActualFija">--/--/---- --:--:--</div>
+
+<div class="top-nav">
+    <a href="index.html"><button>🏠 Inicio</button></a>
+    <a href="registrar-vehiculo.html"><button>🚗 Registrar vehículo</button></a>
+    <a href="registrar-egreso.html"><button>🚪 Registrar egreso</button></a>
+    <a href="registrar-cuenta.html"><button>📄 Registrar cuenta</button></a>
+</div>
+
+<h1>Registrar Vehículo</h1>
+<p class="subtitulo">
+    Encargado administrativo – Estacionamiento UTN Villa María
+</p>
+
+<!-- Vista 1 -->
+<div id="vistaRegistro">
+    <div id="fechaHoraActual" class="info-box"></div>
+    <form id="registroForm" novalidate>
+        <label for="nombre">Nombre del dueño *</label>
+        <input type="text" id="nombre" name="nombre" required autocomplete="off" />
+
+        <label for="apellido">Apellido del dueño *</label>
+        <input type="text" id="apellido" name="apellido" required autocomplete="off" />
+
+        <label for="documento">Documento del dueño *</label>
+        <input type="text" id="documento" name="documento" required autocomplete="off" />
+
+        <div id="errorMsg" class="error hidden"></div>
+
+        <div id="btnContainer">
+            <button type="submit" class="button">
+                Continuar
+            </button>
+            <div class="arrowBox">→</div>
+        </div>
+    </form>
+</div>
+
+<!-- Vista 2 -->
+<div id="vistaVerificacion" class="hidden" role="region" aria-live="polite">
+    <div id="resultadoVerificacion" class="info-box"></div>
+
+    <div id="noComunidadAcciones" class="hidden" style="text-align:center;">
+        <button id="btnVolverNoComunidad" type="button">Volver al inicio</button>
+    </div>
+
+    <div id="vehiculoFormContainer" class="hidden">
+        <form id="vehiculoForm" novalidate>
+            <label for="marca">Marca del vehículo *</label>
+            <input type="text" id="marca" name="marca" required autocomplete="off" />
+
+            <label for="modelo">Modelo del vehículo *</label>
+            <input type="text" id="modelo" name="modelo" required autocomplete="off" />
+
+            <label for="patente">Patente del vehículo *</label>
+            <input type="text" id="patente" name="patente" required autocomplete="off" />
+
+            <div id="errorMsgVeh" class="error hidden"></div>
+
+            <div id="btnContainerVeh">
+                <button type="submit" class="button">
+                    Registrar datos del vehículo
+                </button>
+                <div class="arrowBox">→</div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Vista 3 -->
+<div id="vistaConfirmacion" class="hidden">
+    <div id="datosVehiculo" class="info-box"></div>
+    <div id="msg" style="margin-top: 20px; font-weight: 700; text-align:center;"></div>
+    <div id="buttonsConfirmacion">
+        <button id="btnConfirmar" type="button">Confirmar registro</button>
+        <button id="btnCancelar" type="button">Cancelar</button>
+    </div>
+</div>
+
+<script>
+const registroForm = document.getElementById('registroForm');
+const vistaRegistro = document.getElementById('vistaRegistro');
+
+const vistaVerificacion = document.getElementById('vistaVerificacion');
+const resultadoVerificacion = document.getElementById('resultadoVerificacion');
+const vehiculoFormContainer = document.getElementById('vehiculoFormContainer');
+const vehiculoForm = document.getElementById('vehiculoForm');
+const errorMsgVeh = document.getElementById('errorMsgVeh');
+const noComunidadAcciones = document.getElementById('noComunidadAcciones');
+const btnVolverNoComunidad = document.getElementById('btnVolverNoComunidad');
+
+const vistaConfirmacion = document.getElementById('vistaConfirmacion');
+const datosVehiculoDiv = document.getElementById('datosVehiculo');
+const msgDiv = document.getElementById('msg');
+const btnConfirmar = document.getElementById('btnConfirmar');
+const btnCancelar = document.getElementById('btnCancelar');
+const errorMsgDiv = document.getElementById('errorMsg');
+
+const fechaHoraActualFija = document.getElementById('fechaHoraActualFija');
+const fechaHoraActualDiv = document.getElementById('fechaHoraActual');
+
+// base comunidad
+const baseComunidad = [
+    {nombre: 'valentino', apellido: 'miotti', documento: '45697834'},
+    {nombre: 'melina', apellido: 'pedernera', documento: '46034993'}
+];
+
+function getFechaHoraActual() {
+    const now = new Date();
+    let options = {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+    };
+    return now.toLocaleString('es-AR', options).replace(',', '');
+}
+function actualizarFechaHoraTop() {
+    fechaHoraActualFija.textContent = getFechaHoraActual();
+}
+setInterval(actualizarFechaHoraTop, 1000);
+actualizarFechaHoraTop();
+fechaHoraActualDiv.textContent = "Fecha y hora actual: " + getFechaHoraActual();
+
+function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+registroForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    errorMsgDiv.classList.add('hidden');
+
+    const nombre = registroForm.nombre.value.trim().toLowerCase();
+    const apellido = registroForm.apellido.value.trim().toLowerCase();
+    const documento = registroForm.documento.value.trim();
+
+    if (!nombre || !apellido || !documento) {
+        errorMsgDiv.textContent = "Por favor, complete nombre, apellido y documento.";
+        errorMsgDiv.classList.remove('hidden');
+        return;
+    }
+
+    const encontrado = baseComunidad.find(
+        item => item.nombre === nombre && item.apellido === apellido && item.documento === documento
+    );
+
+    vistaRegistro.classList.add('hidden');
+    vistaConfirmacion.classList.add('hidden');
+    vehiculoFormContainer.classList.add('hidden');
+    noComunidadAcciones.classList.add('hidden');
+    vistaVerificacion.classList.remove('hidden');
+
+    if (encontrado) {
+        resultadoVerificacion.innerText =
+            `El sistema confirma que ${capitalize(nombre)} ${capitalize(apellido)} ` +
+            `pertenece a la comunidad universitaria. Ingrese ahora los datos del vehículo.`;
+        vehiculoForm.reset();
+        errorMsgVeh.classList.add('hidden');
+        vehiculoFormContainer.classList.remove('hidden');
+    } else {
+        resultadoVerificacion.innerHTML =
+            `El sistema informa que <strong>${capitalize(nombre)} ${capitalize(apellido)}</strong> ` +
+            `no pertenece a la comunidad universitaria. No se podrá registrar el vehículo.`;
+        noComunidadAcciones.classList.remove('hidden');
+    }
+});
+
+btnVolverNoComunidad.addEventListener('click', () => {
+    registroForm.reset();
+    vistaVerificacion.classList.add('hidden');
+    vistaConfirmacion.classList.add('hidden');
+    errorMsgDiv.classList.add('hidden');
+    vistaRegistro.classList.remove('hidden');
+    fechaHoraActualDiv.textContent = "Fecha y hora actual: " + getFechaHoraActual();
+});
+
+vehiculoForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    errorMsgVeh.classList.add('hidden');
+
+    const marca = vehiculoForm.marca.value.trim();
+    const modelo = vehiculoForm.modelo.value.trim();
+    const patente = vehiculoForm.patente.value.trim();
+
+    if (!marca || !modelo || !patente) {
+        errorMsgVeh.textContent = 'Complete marca, modelo y patente del vehículo.';
+        errorMsgVeh.classList.remove('hidden');
+        return;
+    }
+
+    const nombre = registroForm.nombre.value.trim();
+    const apellido = registroForm.apellido.value.trim();
+    const documento = registroForm.documento.value.trim();
+
+    vistaVerificacion.classList.add('hidden');
+    vistaConfirmacion.classList.remove('hidden');
+
+    datosVehiculoDiv.innerHTML = `
+        <p><strong>Nombre del dueño:</strong> ${capitalize(nombre)}</p>
+        <p><strong>Apellido del dueño:</strong> ${capitalize(apellido)}</p>
+        <p><strong>Documento del dueño:</strong> ${documento}</p>
+        <p><strong>Marca del vehículo:</strong> ${marca}</p>
+        <p><strong>Modelo del vehículo:</strong> ${modelo}</p>
+        <p><strong>Patente del vehículo:</strong> ${patente}</p>
+    `;
+
+    msgDiv.style.color = '#333';
+    msgDiv.textContent = '¿Confirma el registro de este vehículo en el sistema?';
+
+    window.registroVehiculoTemporal = {
+        nombre: capitalize(nombre),
+        apellido: capitalize(apellido),
+        documento,
+        marca,
+        modelo,
+        patente
+    };
+});
+
+btnConfirmar.addEventListener('click', () => {
+    const datos = window.registroVehiculoTemporal;
+    if (!datos) return;
+
+    let vehiculos = JSON.parse(localStorage.getItem('vehiculosRegistrados') || '[]');
+    datos.fechaRegistro = getFechaHoraActual();
+    vehiculos.push(datos);
+    localStorage.setItem('vehiculosRegistrados', JSON.stringify(vehiculos));
+
+    msgDiv.style.color = 'green';
+    msgDiv.textContent = 'El sistema registró correctamente los datos del vehículo.';
+    btnConfirmar.disabled = true;
+    btnCancelar.textContent = 'Volver al inicio';
+    datosVehiculoDiv.style.opacity = '0.5';
+});
+
+btnCancelar.addEventListener('click', () => {
+    registroForm.reset();
+    vehiculoForm.reset();
+    vistaConfirmacion.classList.add('hidden');
+    vistaVerificacion.classList.add('hidden');
+    vistaRegistro.classList.remove('hidden');
+    errorMsgVeh.classList.add('hidden');
+    errorMsgDiv.classList.add('hidden');
+    msgDiv.textContent = '';
+    datosVehiculoDiv.innerHTML = '';
+    window.registroVehiculoTemporal = null;
+    fechaHoraActualDiv.textContent = "Fecha y hora actual: " + getFechaHoraActual();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Registrar Cuenta - Estacionamiento UTN Villa María</title>
+<style>
+    :root {
+        --naranja-pastel: #f3aa75;
+        --naranja-oscuro: #d6844b;
+        --naranja-muy-suave: #f9e5d5;
+        --texto-negro: #000000;
+        --texto-gris: #333333;
+        --fondo-blanco: #ffffff;
+        --error-rojo: #b22222;
+        --gris-claro: #f5f5f5;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 60px auto 20px auto;
+        background: var(--gris-claro);
+        padding: 25px 35px 40px 35px;
+        border-radius: 8px;
+        box-shadow: 0 0 14px rgba(0,0,0,0.12);
+        position: relative;
+        min-height: 600px;
+        color: var(--texto-gris);
+    }
+    #logo {
+        position: fixed;
+        top: 10px;
+        left: 15px;
+        height: 48px;
+        width: auto;
+        z-index: 1001;
+    }
+    #fechaHoraActualFija {
+        position: fixed;
+        top: 12px;
+        right: 15px;
+        background: var(--naranja-pastel);
+        color: var(--texto-negro);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: monospace;
+        z-index: 1000;
+        box-shadow: 0 0 6px rgba(0,0,0,0.15);
+        user-select: none;
+    }
+
+    .top-nav {
+        margin: 0 auto 18px auto;
+        max-width: 700px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .top-nav a { text-decoration: none; }
+    .top-nav button {
+        background-color: var(--naranja-pastel);
+        border: none;
+        color: var(--texto-negro);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 6px rgba(243,170,117,0.6);
+    }
+    .top-nav button:hover {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+
+    h1 {
+        color: var(--texto-negro);
+        text-align: center;
+        margin-bottom: 10px;
+        padding-top: 10px;
+        font-weight: 800;
+        font-size: 2.2rem;
+    }
+    p.subtitulo {
+        text-align: center;
+        margin-top: -5px;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+        color: var(--texto-gris);
+    }
+    label {
+        display: block;
+        margin-top: 18px;
+        font-weight: 700;
+        color: var(--texto-negro);
+    }
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 5px;
+        box-sizing: border-box;
+        border: 2.5px solid var(--naranja-pastel);
+        border-radius: 6px;
+        font-size: 1rem;
+        color: var(--texto-negro);
+        background-color: var(--fondo-blanco);
+        transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus,
+    select:focus {
+        border-color: var(--naranja-oscuro);
+        outline: none;
+        box-shadow: 0 0 8px var(--naranja-muy-suave);
+        background: var(--fondo-blanco);
+    }
+    .info-box {
+        background: var(--fondo-blanco);
+        padding: 18px 22px;
+        margin-top: 15px;
+        border-left: 6px solid var(--naranja-pastel);
+        font-size: 1.05em;
+        line-height: 1.5em;
+        color: var(--texto-negro);
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .error {
+        color: var(--error-rojo);
+        font-weight: 700;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 1rem;
+    }
+    #btnContainer {
+        margin-top: 28px;
+        text-align: center;
+        display: inline-flex;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(243, 170, 117, 0.5);
+    }
+    button.button {
+        background-color: var(--naranja-pastel);
+        border: none;
+        color: var(--texto-negro);
+        font-weight: 800;
+        padding: 12px 28px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 6px 0 0 6px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        min-width: 160px;
+        letter-spacing: 0.03em;
+        user-select: none;
+    }
+    button.button:hover:not(:disabled) {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+    button.button:disabled {
+        background-color: var(--naranja-muy-suave);
+        cursor: not-allowed;
+        color: var(--texto-negro);
+    }
+    .arrowBox {
+        background-color: var(--naranja-pastel);
+        color: var(--texto-negro);
+        font-weight: 900;
+        font-size: 1.5rem;
+        padding: 0 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0 6px 6px 0;
+        box-shadow: inset -2px 0 4px rgba(0,0,0,0.07);
+        user-select: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #btnContainer:hover .arrowBox {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+    #buttonsConfirmacion {
+        margin-top: 30px;
+        text-align: center;
+    }
+    #buttonsConfirmacion button {
+        margin: 0 12px;
+        padding: 12px 30px;
+        font-size: 1.05rem;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        font-weight: 700;
+        box-shadow: 0 3px 8px rgba(243, 170, 117, 0.6);
+        letter-spacing: 0.02em;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        user-select: none;
+        min-width: 160px;
+    }
+    #btnConfirmar {
+        background-color: var(--naranja-pastel);
+        color: var(--texto-negro);
+    }
+    #btnConfirmar:hover:not(:disabled) {
+        background-color: var(--naranja-oscuro);
+        color: var(--fondo-blanco);
+    }
+    #btnCancelar {
+        background-color: #d95757;
+        color: var(--fondo-blanco);
+    }
+    #btnCancelar:hover {
+        background-color: #b23f3f;
+    }
+    .hidden { display:none; }
+</style>
+</head>
+<body>
+
+<img id="logo" src="https://appautogestion.frvm.utn.edu.ar/static/images/utn-logo.png" alt="UTN Logo" />
+<div id="fechaHoraActualFija">--/--/---- --:--:--</div>
+
+<div class="top-nav">
+    <a href="index.html"><button>🏠 Inicio</button></a>
+    <a href="registrar-vehiculo.html"><button>🚗 Registrar vehículo</button></a>
+    <a href="registrar-egreso.html"><button>🚪 Registrar egreso</button></a>
+    <a href="registrar-cuenta.html"><button>📄 Registrar cuenta</button></a>
+</div>
+
+<h1>Registrar Cuenta</h1>
+<p class="subtitulo">Cuenta corriente de usuario de la comunidad universitaria</p>
+
+<div id="vistaCuenta">
+    <form id="cuentaForm" novalidate>
+        <label for="titular">Nombre y apellido del titular *</label>
+        <input type="text" id="titular" name="titular" autocomplete="off" required />
+
+        <label for="documento">Documento *</label>
+        <input type="text" id="documento" name="documento" autocomplete="off" required />
+
+        <label for="tipoUsuario">Tipo de usuario *</label>
+        <select id="tipoUsuario" name="tipoUsuario" required>
+            <option value="">Seleccione...</option>
+            <option value="Estudiante">Estudiante</option>
+            <option value="Docente">Docente</option>
+            <option value="No docente">No docente</option>
+        </select>
+
+        <label for="codigoCuenta">Código de cuenta *</label>
+        <input type="text" id="codigoCuenta" name="codigoCuenta" autocomplete="off" required />
+
+        <label for="saldoInicial">Saldo inicial (opcional)</label>
+        <input type="text" id="saldoInicial" name="saldoInicial" autocomplete="off" placeholder="Ej: 0 o 5000" />
+
+        <div id="errorMsg" class="error hidden"></div>
+
+        <div id="btnContainer">
+            <button type="submit" class="button">Continuar</button>
+            <div class="arrowBox">→</div>
+        </div>
+    </form>
+</div>
+
+<div id="vistaConfirmacion" class="hidden">
+    <div id="datosCuenta" class="info-box"></div>
+    <div id="msg" style="margin-top: 20px; font-weight: 700; text-align:center;"></div>
+    <div id="buttonsConfirmacion">
+        <button id="btnConfirmar" type="button">Confirmar registro</button>
+        <button id="btnCancelar" type="button">Cancelar</button>
+    </div>
+</div>
+
+<script>
+const fechaHoraActualFija = document.getElementById('fechaHoraActualFija');
+function getFechaHoraActual() {
+    const now = new Date();
+    let options = {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+    };
+    return now.toLocaleString('es-AR', options).replace(',', '');
+}
+function actualizarFecha() {
+    fechaHoraActualFija.textContent = getFechaHoraActual();
+}
+setInterval(actualizarFecha, 1000);
+actualizarFecha();
+
+function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+const cuentaForm = document.getElementById('cuentaForm');
+const errorMsg = document.getElementById('errorMsg');
+const vistaCuenta = document.getElementById('vistaCuenta');
+const vistaConfirmacion = document.getElementById('vistaConfirmacion');
+const datosCuentaDiv = document.getElementById('datosCuenta');
+const msgDiv = document.getElementById('msg');
+const btnConfirmar = document.getElementById('btnConfirmar');
+const btnCancelar = document.getElementById('btnCancelar');
+
+cuentaForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorMsg.classList.add('hidden');
+
+    const titular = cuentaForm.titular.value.trim();
+    const documento = cuentaForm.documento.value.trim();
+    const tipoUsuario = cuentaForm.tipoUsuario.value;
+    const codigoCuenta = cuentaForm.codigoCuenta.value.trim();
+    const saldoInicial = cuentaForm.saldoInicial.value.trim() || '0';
+
+    if (!titular || !documento || !tipoUsuario || !codigoCuenta) {
+        errorMsg.textContent = 'Complete todos los campos obligatorios (*).';
+        errorMsg.classList.remove('hidden');
+        return;
+    }
+
+    vistaCuenta.classList.add('hidden');
+    vistaConfirmacion.classList.remove('hidden');
+
+    datosCuentaDiv.innerHTML = `
+        <p><strong>Titular:</strong> ${capitalize(titular)}</p>
+        <p><strong>Documento:</strong> ${documento}</p>
+        <p><strong>Tipo de usuario:</strong> ${tipoUsuario}</p>
+        <p><strong>Código de cuenta:</strong> ${codigoCuenta}</p>
+        <p><strong>Saldo inicial:</strong> $${saldoInicial}</p>
+        <p><strong>Fecha y hora de alta:</strong> ${getFechaHoraActual()}</p>
+    `;
+
+    msgDiv.style.color = '#333';
+    msgDiv.textContent = '¿Confirma que el sistema registre esta cuenta?';
+
+    window.cuentaTemporal = {
+        titular: capitalize(titular),
+        documento,
+        tipoUsuario,
+        codigoCuenta,
+        saldoInicial: saldoInicial,
+        fechaAlta: getFechaHoraActual()
+    };
+});
+
+btnConfirmar.addEventListener('click', () => {
+    const datos = window.cuentaTemporal;
+    if (!datos) return;
+
+    let cuentas = JSON.parse(localStorage.getItem('cuentasCorrientes') || '[]');
+    cuentas.push(datos);
+    localStorage.setItem('cuentasCorrientes', JSON.stringify(cuentas));
+
+    msgDiv.style.color = 'green';
+    msgDiv.textContent = 'El sistema registró correctamente la cuenta.';
+    btnConfirmar.disabled = true;
+    btnCancelar.textContent = 'Volver al inicio';
+    datosCuentaDiv.style.opacity = '0.5';
+});
+
+btnCancelar.addEventListener('click', () => {
+    cuentaForm.reset();
+    vistaConfirmacion.classList.add('hidden');
+    vistaCuenta.classList.remove('hidden');
+    errorMsg.classList.add('hidden');
+    msgDiv.textContent = '';
+    datosCuentaDiv.innerHTML = '';
+    window.cuentaTemporal = null;
+});
+</script>
+
+</body>
+</html>
+
